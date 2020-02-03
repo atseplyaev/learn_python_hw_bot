@@ -1,5 +1,4 @@
-import os
-import configparser
+from .utils import get_param
 
 # Telegram modules
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
@@ -19,30 +18,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s",
                     level=logging.INFO,
                     filename="bot.log")
-
-
-def get_param(section, name):
-    """
-    Возращает значение параметра "name" из секции "section"
-
-    Args:
-        section: имя секции
-        name: имя параметра
-
-    Returns:
-        значение параметра.
-    """
-    # TODO: Переместить функцию в глобальный файл (utils|tools).py
-    path = os.path.expanduser("~/.mpython_conf")
-    if not os.path.exists(path):
-        print("{} not found".format(path))
-        return
-
-    config = configparser.ConfigParser()
-
-    config.read(path)
-    value = config.get(section, name)
-    return value
 
 def start(update: Update, context):
     """
