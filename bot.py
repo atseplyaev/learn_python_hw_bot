@@ -1,4 +1,5 @@
-from .utils import get_param
+from utils import get_param
+import settings
 
 # Telegram modules
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
@@ -29,7 +30,8 @@ def start(update: Update, context):
     Returns:
         None
     """
-    text = 'Вызван /start'
+    smile = emojize(choice(settings.USER_EMOJI), use_aliases=True)
+    text = f'Привет {smile}'
     print(text)
     update.message.reply_text(text)
 
