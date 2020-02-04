@@ -134,10 +134,10 @@ def main():
 
     dp = bot.dispatcher
 
-    dp.add_handler(CommandHandler("cat", send_cat_picture))
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("planet", planet))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
+    dp.add_handler(CommandHandler("cat", send_cat_picture, pass_user_data=True))
+    dp.add_handler(CommandHandler("start", start, pass_user_data=True))
+    dp.add_handler(CommandHandler("planet", planet, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.text, talk_to_me, pass_user_data=True))
 
     bot.start_polling()
     bot.idle()
