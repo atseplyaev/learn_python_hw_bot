@@ -139,6 +139,18 @@ def change_avatar(update: Update, context: CallbackContext):
     update.message.reply_text(text, reply_markup=get_keyboard())
 
 
+def get_location(update: Update, context: CallbackContext):
+    print(update.message.location)
+    text = f'Готово: {get_user_emo(context.user_data)}'
+    update.message.reply_text(text, reply_markup=get_keyboard())
+
+
+def get_contact(update: Update, context: CallbackContext):
+    print(update.message.contact)
+    text = f'Готово: {get_user_emo(context.user_data)}'
+    update.message.reply_text(text, reply_markup=get_keyboard())
+
+
 def get_user_emo(user_data):
     if not 'emo' in user_data:
         user_data['emo'] = emojize(choice(settings.USER_EMOJI), use_aliases=True)
@@ -182,6 +194,8 @@ def main():
     dp.add_handler(CommandHandler("cat", send_cat_picture, pass_user_data=True))
     dp.add_handler(CommandHandler("start", start, pass_user_data=True))
     dp.add_handler(CommandHandler("planet", planet, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.contact, get_contact, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.location, get_location, pass_user_data=True))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me, pass_user_data=True))
 
     bot.start_polling()
