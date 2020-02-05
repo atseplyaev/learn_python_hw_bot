@@ -110,7 +110,7 @@ def talk_to_me(update: Update, context: CallbackContext):
 
 def send_cat_picture(update: Update, context: CallbackContext):
     """
-    Обработчик команды /start
+    Обработчик команды /cat и кнопки "Прислать котика"
     Args:
         update:  Контекст бота
         context: Внешний контекст
@@ -144,18 +144,44 @@ def change_avatar(update: Update, context: CallbackContext):
 
 
 def get_location(update: Update, context: CallbackContext):
+    """
+    Обработчик команды "Геолокация"
+    Args:
+        update:  Контекст бота
+        context: Внешний контекст
+
+    Returns:
+        None
+    """
     print(update.message.location)
     text = f'Готово: {get_user_emo(context.user_data)}'
     update.message.reply_text(text, reply_markup=get_keyboard())
 
 
 def get_contact(update: Update, context: CallbackContext):
+    """
+    Обработчик команды "Контактные данные"
+    Args:
+        update:  Контекст бота
+        context: Внешний контекст
+
+    Returns:
+        None
+    """
     print(update.message.contact)
     text = f'Готово: {get_user_emo(context.user_data)}'
     update.message.reply_text(text, reply_markup=get_keyboard())
 
 
 def get_user_emo(user_data):
+    """
+    Возвращает новый или уже существующий аватар
+    Args:
+        user_data: Пользовательские данные
+
+    Returns:
+        None
+    """
     if not 'emo' in user_data:
         user_data['emo'] = emojize(choice(settings.USER_EMOJI), use_aliases=True)
 
@@ -163,6 +189,11 @@ def get_user_emo(user_data):
 
 
 def get_keyboard():
+    """
+    Возвращает дефолтную клавиатуру.
+    Returns:
+        Дефолтная клавиатура.
+    """
     contact_button = KeyboardButton('Контактные данные', request_contact=True)
     location_button = KeyboardButton('Геолокация', request_location=True)
 
