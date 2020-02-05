@@ -119,6 +119,26 @@ def send_cat_picture(update: Update, context: CallbackContext):
     context.bot.send_photo(chat_id=update.message.chat.id, photo=open(cat_pic, 'rb'))
 
 
+def change_avatar(update: Update, context: CallbackContext):
+    """
+    Обработчик команды "Сменить аватарку"
+    Args:
+        update:  Контекст бота
+        context: Внешний контекст
+
+    Returns:
+        None
+    """
+    text = ""
+    if 'emo' in context.user_data:
+        text = 'Ваш старый аватар: {}.'.format(context.user_data['emo'])
+        del context.user_data['emo']
+
+    new_avatar = get_user_emo(context.user_data)
+    text = f'{text} Ваш новый аватар: {new_avatar}'
+    update.message.reply_text(text, reply_markup=get_keyboard())
+
+
 def get_user_emo(user_data):
     if not 'emo' in user_data:
         user_data['emo'] = emojize(choice(settings.USER_EMOJI), use_aliases=True)
@@ -131,6 +151,7 @@ def get_keyboard():
     location_button = KeyboardButton('Геолокация', request_location=True)
 
     return ReplyKeyboardMarkup([
+        ['Прислать котика', 'Сменить аватар'],
         [contact_button, location_button]
     ], resize_keyboard=True
     )
@@ -156,6 +177,8 @@ def main():
 
     dp = bot.dispatcher
 
+    dp.add_handler(MessageHandler(Filters.regex('^(Прислать котика)$'), send_cat_picture, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.regex('^(Сменить аватар)$'), change_avatar, pass_user_data=True))
     dp.add_handler(CommandHandler("cat", send_cat_picture, pass_user_data=True))
     dp.add_handler(CommandHandler("start", start, pass_user_data=True))
     dp.add_handler(CommandHandler("planet", planet, pass_user_data=True))
