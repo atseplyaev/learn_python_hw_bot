@@ -2,7 +2,9 @@ from utils import get_param
 import settings
 
 # Telegram modules
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, \
+    MessageHandler, Filters, CallbackContext
+
 from telegram.vendor.ptb_urllib3 import urllib3
 from telegram import Update, Message, ReplyKeyboardMarkup, KeyboardButton
 
@@ -19,6 +21,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s",
                     level=logging.INFO,
                     filename="bot.log")
+
 
 def start(update: Update, context):
     """
@@ -51,7 +54,7 @@ def planet(update: Update, context: CallbackContext):
     # Достаём название плнеты/звезды из сообщения
     user_text = update.message.text.split()
     if len(user_text) < 2:
-        error_msg = "Некорректные данные.\n"\
+        error_msg = "Некорректные данные.\n" \
                     "Введите команду в виде: /planet Mars."
 
         print(error_msg)
@@ -68,7 +71,7 @@ def planet(update: Update, context: CallbackContext):
     # Проверяем наличие планеты в словаре.
     if not (planet_name in plan_moon):
         error_msg = "Неизвестная пленета.\n" \
-                    "Список доступных планет:\n"\
+                    "Список доступных планет:\n" \
                     "{}".format("\n".join(plan_moon))
 
         print(error_msg)
@@ -103,6 +106,7 @@ def talk_to_me(update: Update, context: CallbackContext):
     logging.info("User: %s, Chat id %s, Message: %s", update.message.chat.username,
                  update.message.chat.id, update.message.text)
     update.message.reply_text(user_text, reply_markup=get_keyboard())
+
 
 def send_cat_picture(update: Update, context: CallbackContext):
     """
