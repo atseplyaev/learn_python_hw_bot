@@ -1,5 +1,4 @@
-from utils import get_param
-import settings
+from utils import *
 
 # Telegram modules
 from telegram.ext import Updater, CommandHandler, \
@@ -7,8 +6,6 @@ from telegram.ext import Updater, CommandHandler, \
 
 from telegram.vendor.ptb_urllib3 import urllib3
 from telegram import Update, Message, ReplyKeyboardMarkup, KeyboardButton
-
-from emoji import emojize
 
 from glob import glob
 from random import choice
@@ -171,37 +168,6 @@ def get_contact(update: Update, context: CallbackContext):
     print(update.message.contact)
     text = f'Готово: {get_user_emo(context.user_data)}'
     update.message.reply_text(text, reply_markup=get_keyboard())
-
-
-def get_user_emo(user_data):
-    """
-    Возвращает новый или уже существующий аватар
-    Args:
-        user_data: Пользовательские данные
-
-    Returns:
-        None
-    """
-    if not 'emo' in user_data:
-        user_data['emo'] = emojize(choice(settings.USER_EMOJI), use_aliases=True)
-
-    return user_data['emo']
-
-
-def get_keyboard():
-    """
-    Возвращает дефолтную клавиатуру.
-    Returns:
-        Дефолтная клавиатура.
-    """
-    contact_button = KeyboardButton('Контактные данные', request_contact=True)
-    location_button = KeyboardButton('Геолокация', request_location=True)
-
-    return ReplyKeyboardMarkup([
-        ['Прислать котика', 'Сменить аватар'],
-        [contact_button, location_button]
-    ], resize_keyboard=True
-    )
 
 
 def main():
