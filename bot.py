@@ -20,7 +20,7 @@ logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s",
                     filename="bot.log")
 
 
-def start(update: Update, context):
+def start(update: Update, context: CallbackContext):
     """
     Обработчик команды /start
     Args:
@@ -37,13 +37,12 @@ def start(update: Update, context):
     update.message.reply_text(text, reply_markup=get_keyboard())
 
 
-def planet(update: Update, context: CallbackContext):
+def planet(update: Update):
     """
     Обработчик команды /planet
 
     Args:
         update:  Контекст бота
-        context: Внешний контекст
 
     Returns:
         None
