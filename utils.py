@@ -15,7 +15,7 @@ def get_param(section, name):
         name: имя параметра
 
     Returns:
-        значение параметра.
+        str: значение параметра.
     """
     path = os.path.expanduser("~/.mpython_conf")
     if not os.path.exists(path):
@@ -48,7 +48,7 @@ def get_keyboard():
     """
     Возвращает дефолтную клавиатуру.
     Returns:
-        Дефолтная клавиатура.
+        ReplyKeyboardMarkup: Дефолтная клавиатура.
     """
     contact_button = KeyboardButton('Контактные данные', request_contact=True)
     location_button = KeyboardButton('Геолокация', request_location=True)
