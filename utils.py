@@ -12,7 +12,6 @@ def get_param(section, name):
     Returns:
         значение параметра.
     """
-    # TODO: Переместить функцию в глобальный файл (utils|tools).py
     path = os.path.expanduser("~/.mpython_conf")
     if not os.path.exists(path):
         print("{} not found".format(path))
