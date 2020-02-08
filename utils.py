@@ -4,6 +4,7 @@ from random import choice
 import settings
 from emoji import emojize
 from telegram import ReplyKeyboardMarkup, KeyboardButton
+from clarifai.rest import ClarifaiApp
 
 
 def get_param(section, name):
@@ -58,3 +59,16 @@ def get_keyboard():
         [contact_button, location_button]
     ], resize_keyboard=True
     )
+
+
+def is_cat(filename):
+    image_has_cat = False
+    app = ClarifaiApp(api_key=get_param("telegram_setting", "clarifai_token"))
+    model = app.public_models.general_model
+    response = model.predict_by_filename(filename, max_concepts=5)
+    if response['status']['code'] == 10000:
+        for concept in response['outputs'][0]['data']['concepts']:
+            if concept['name'] == 'cat':
+                image_has_cat = True
+                break
+    return image_has_cat
