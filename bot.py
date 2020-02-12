@@ -3,7 +3,7 @@ from handlers import *
 
 # Telegram modules
 from telegram.ext import Updater, CommandHandler, \
-    MessageHandler, Filters
+    MessageHandler, Filters, ConversationHandler
 
 from telegram.vendor.ptb_urllib3 import urllib3
 
@@ -33,6 +33,21 @@ def main():
     bot = Updater(token, use_context=True, request_kwargs=PROXY)
 
     dp = bot.dispatcher
+
+    form = ConversationHandler(
+        entry_points=[
+            MessageHandler( Filters.regex("^(Заполнить анкету)$"), form_start, pass_user_data=True)
+        ],
+        states={
+            "name":[MessageHandler(Filters.text, form_get_name, pass_user_data=True)],
+            "rating": [MessageHandler(Filters.regex("^([1-5])$"), form_rating, pass_user_data=True)],
+            "comment": [MessageHandler(Filters.text, form_comment, pass_user_data=True),
+                        CommandHandler("cancel", form_skip, pass_user_data=True)]
+        },
+        fallbacks=[MessageHandler(Filters.text | Filters.video | Filters.photo \
+                                  | Filters.document, dontknow, pass_user_data=True)]
+    )
+    dp.add_handler(form)
 
     dp.add_handler(MessageHandler(Filters.regex('^(Прислать котика)$'), send_cat_picture, pass_user_data=True))
     dp.add_handler(MessageHandler(Filters.regex('^(Сменить аватар)$'), change_avatar, pass_user_data=True))

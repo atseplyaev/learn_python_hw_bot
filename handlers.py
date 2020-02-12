@@ -6,8 +6,9 @@ import ephem
 from datetime import datetime
 from utils import get_user_emo, get_keyboard, is_cat
 
-from telegram.ext import CallbackContext
-from telegram import Update
+from telegram.ext import CallbackContext, ConversationHandler
+from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup, \
+    ParseMode
 import logging
 
 
@@ -175,4 +176,65 @@ def check_user_photo(update: Update, context: CallbackContext):
     else:
         os.remove(filename)
         update.message.reply_text("Тревога, котик не обнаружен.")
+
+
+def form_start(update: Update, context: CallbackContext):
+    update.message.reply_text("Как вас зовут? Напишиите имя и фамилию",
+                              reply_martkup=ReplyKeyboardRemove())
+    return "name"
+
+
+def form_get_name(update: Update, context: CallbackContext):
+    user_name = update.message.text
+
+    if len(user_name.split(" ")) < 2:
+        update.message.reply_text("Пожалуйста, напишите имя и фамилию")
+        return "name"
+
+    context.user_data["form_name"] = user_name
+    keyboard = [["1", "2", "3", "4", "5"]]
+
+    update.message.reply_text(
+        "Понравился ли вам курс? Оцените по шкале от 1 до 5",
+        reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+    )
+
+    return "rating"
+
+
+def form_rating(update: Update, context: CallbackContext):
+    context.user_data["form_rating"] = update.message.text
+
+    update.message.reply_text(
+        "Оставьте комментарий в свободной форме \
+        или пропустите этот шаг, введя /cancel")
+
+    return "comment"
+
+
+def form_comment(update: Update, context: CallbackContext):
+    context.user_data["form_comment"] = update.message.text
+
+    user_text = "\
+    <b>Имя Фамилия:</b> {form_name} \n\
+    <b>Оценка:</b> {form_rating} \n\
+    <b>Комментарий:</b> {form_comment}".format(**context.user_data)
+    update.message.reply_text(user_text, reply_markup=get_keyboard(),
+                              parse_mode=ParseMode.HTML)
+
+    return ConversationHandler.END
+
+
+def form_skip(update: Update, context: CallbackContext):
+    user_text = """
+       <b>Имя Фамилия:</b> {form_name}
+       <b>Оценка:</b> {form_rating}""".format(**context.user_data)
+    update.message.reply_text(user_text, reply_markup=get_keyboard(),
+                              parse_mode=ParseMode.HTML)
+
+    return ConversationHandler.END
+
+
+def dontknow(update: Update, context: CallbackContext):
+    pass
 
